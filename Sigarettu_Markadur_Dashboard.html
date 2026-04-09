@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sígarettumarkaðurinn á Íslandi · 2023–2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<style>
+/* ═══════  RESET & TOKENS  ═══════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#0a0a0b;--surface:#f6f4f0;--warm:#ede9e1;--paper:#faf8f5;
+  --line:rgba(10,10,11,.08);--line-md:rgba(10,10,11,.15);
+  --text:#1a1a1b;--muted:#7a756d;--gold:#b8963e;--gold-lt:#d4af6a;
+  --red:#c0392b;--green:#27774a;
+  --font-d:'Playfair Display',Georgia,serif;
+  --font-b:'DM Sans',system-ui,-apple-system,sans-serif;
+  --radius:3px;
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:var(--font-b);background:var(--surface);color:var(--text);line-height:1.6;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E")}
+
+/* ═══════  ANIMATIONS  ═══════ */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.ani{opacity:0;animation:rise .5s ease-out forwards}
+
+/* ═══════  MASTHEAD  ═══════ */
+.masthead{background:var(--ink);color:#f6f4f0;border-bottom:3px solid var(--gold);position:relative;overflow:hidden}
+.masthead::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,150,62,.07),transparent 60%);pointer-events:none}
+.mast-inner{max-width:1400px;margin:0 auto;padding:28px 52px;display:flex;align-items:center;justify-content:space-between;gap:32px;position:relative;z-index:1}
+.mast-brand{display:flex;align-items:center;gap:20px}
+.mast-logo{width:44px;height:44px;border-radius:50%;background:var(--gold);display:grid;place-items:center;font-family:var(--font-d);font-size:20px;font-weight:900;color:var(--ink);flex-shrink:0}
+.mast-title{font-family:var(--font-d);font-size:22px;font-weight:700;letter-spacing:-.01em}
+.mast-sub{font-size:11px;font-weight:300;color:rgba(246,244,240,.4);letter-spacing:.04em;margin-top:2px}
+.mast-tag{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lt);text-align:right}
+.mast-date{font-size:11px;font-weight:300;color:rgba(246,244,240,.45);margin-top:3px}
+
+/* ═══════  YEAR FILTER BAR  ═══════ */
+.year-bar{position:sticky;top:0;z-index:100;background:var(--paper);border-bottom:2px solid var(--gold);box-shadow:0 2px 20px rgba(10,10,11,.1)}
+.year-bar-inner{max-width:1400px;margin:0 auto;padding:0 52px;display:flex;align-items:center;gap:0}
+.yb-label{font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:14px 20px 14px 0;border-right:1px solid var(--line-md);margin-right:16px;white-space:nowrap}
+.yb-btns{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 0}
+.ybtn{padding:6px 20px;border:1.5px solid var(--line-md);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;transition:all .18s;background:transparent;color:var(--text);font-family:var(--font-b);letter-spacing:.01em}
+.ybtn:hover{border-color:var(--gold);color:var(--gold)}
+.ybtn.active{background:var(--ink);color:#f6f4f0;border-color:var(--ink)}
+.ybtn.active.y2023{background:#94a3b8;border-color:#94a3b8}
+.ybtn.active.y2024{background:#1e3a5f;border-color:#1e3a5f}
+.ybtn.active.y2025{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.ybtn.active.y2026{background:var(--red);border-color:var(--red)}
+.yb-info{margin-left:auto;font-size:11px;color:var(--muted);font-weight:300;padding:14px 0;white-space:nowrap}
+.yb-info strong{color:var(--text);font-weight:600}
+
+/* ═══════  LAYOUT  ═══════ */
+.page{max-width:1400px;margin:0 auto;padding:44px 52px 72px}
+.section{margin-bottom:52px}
+
+/* ═══════  HERO  ═══════ */
+.hero{background:var(--ink);color:#f6f4f0;border-radius:var(--radius);overflow:hidden;display:grid;grid-template-columns:1.1fr 1fr;min-height:260px}
+.hero-body{padding:44px 48px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid rgba(255,255,255,.06)}
+.hero-eyebrow{font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-lt);margin-bottom:12px}
+.hero-h1{font-family:var(--font-d);font-size:34px;font-weight:900;letter-spacing:-.02em;line-height:1.12;margin-bottom:14px}
+.hero-h1 em{font-style:normal;color:var(--gold-lt)}
+.hero-desc{font-size:13px;font-weight:300;color:rgba(246,244,240,.6);line-height:1.7;max-width:460px}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.hs{padding:22px 28px;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid rgba(255,255,255,.06);border-right:1px solid rgba(255,255,255,.06)}
+.hs:nth-child(2n){border-right:none}.hs:nth-child(n+3){border-bottom:none}
+.hs-label{font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,244,240,.35);margin-bottom:6px}
+.hs-val{font-family:var(--font-d);font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1;transition:opacity .2s}
+.hs-note{font-size:11px;font-weight:300;margin-top:6px}
+.hs-note.up{color:#34d399}.hs-note.dn{color:#f87171}.hs-note.nu{color:rgba(246,244,240,.4)}
+
+/* ═══════  KPI ROW  ═══════ */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line-md);border-radius:var(--radius);overflow:hidden;background:var(--paper)}
+.kpi{padding:24px 20px;border-right:1px solid var(--line);position:relative;transition:background .2s}
+.kpi:last-child{border-right:none}
+.kpi:hover{background:var(--warm)}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi:nth-child(1)::after{background:var(--gold)}
+.kpi:nth-child(2)::after{background:#1e3a5f}
+.kpi:nth-child(3)::after{background:#e67e22}
+.kpi:nth-child(4)::after{background:#8b5cf6}
+.kpi:nth-child(5)::after{background:#16a34a}
+.kpi-label{font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.kpi-val{font-family:var(--font-d);font-size:26px;font-weight:700;letter-spacing:-.02em;transition:opacity .2s}
+.kpi-foot{font-size:11px;color:var(--muted);margin-top:6px;min-height:16px}
+
+/* ═══════  SECTION HEADER  ═══════ */
+.sh{display:flex;align-items:baseline;gap:16px;margin-bottom:22px;border-bottom:1px solid var(--line-md);padding-bottom:12px}
+.sh-num{font-family:var(--font-d);font-size:40px;font-weight:900;color:var(--gold);line-height:1;letter-spacing:-.03em}
+.sh-text h2{font-family:var(--font-d);font-size:21px;font-weight:700;letter-spacing:-.01em}
+.sh-text p{font-size:12px;color:var(--muted);font-weight:300;margin-top:2px}
+.sh-badge{margin-left:auto;padding:4px 14px;border-radius:16px;font-size:11px;font-weight:600;background:var(--ink);color:var(--gold-lt);letter-spacing:.04em;white-space:nowrap}
+
+/* ═══════  CARDS  ═══════ */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px}
+.grid-1-2{display:grid;grid-template-columns:1fr 2fr;gap:24px}
+.card{background:var(--paper);border:1px solid var(--line-md);border-radius:var(--radius);padding:26px 26px 22px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--line-md)}
+.card-head{font-family:var(--font-d);font-size:14.5px;font-weight:700;margin-bottom:3px}
+.card-sub{font-size:11px;color:var(--muted);font-weight:300;margin-bottom:18px}
+.chart-wrap{position:relative;width:100%}
+.h200{height:200px}.h240{height:240px}.h260{height:260px}.h280{height:280px}.h300{height:300px}.h340{height:340px}
+
+/* ═══════  TABLE  ═══════ */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line-md);border-radius:var(--radius)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead{background:var(--ink);color:#f6f4f0}
+th{padding:11px 15px;font-weight:500;text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:var(--gold-lt)}
+th.num,td.num{text-align:right}
+th.active-col{color:var(--gold-lt)!important}
+td{padding:9px 15px;border-bottom:1px solid var(--line)}
+td.active-col{background:rgba(184,150,62,.06);font-weight:600}
+tbody tr:hover{background:var(--warm)}
+tbody tr:nth-child(even){background:rgba(10,10,11,.018)}
+.rank{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;font-size:10px;font-weight:600;background:var(--line-md);color:var(--text)}
+.rank.gold{background:var(--gold);color:var(--ink)}.rank.silver{background:#94a3b8;color:#fff}.rank.bronze{background:#c2703e;color:#fff}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.badge.up{background:rgba(39,119,74,.1);color:var(--green)}
+.badge.dn{background:rgba(192,57,43,.1);color:var(--red)}
+.badge.nu{background:rgba(0,0,0,.05);color:var(--muted)}
+
+/* ═══════  BRAND FILTERS  ═══════ */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.fbtn{padding:5px 14px;border:1.5px solid var(--line-md);border-radius:16px;font-size:10.5px;font-weight:500;cursor:pointer;transition:all .18s;background:transparent;color:var(--text);font-family:var(--font-b)}
+.fbtn:hover{border-color:var(--gold)}
+.fbtn.active{color:#fff}
+
+/* ═══════  INSIGHTS  ═══════ */
+.insights{background:var(--ink);color:#f6f4f0;border-radius:var(--radius);padding:38px 42px;display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.ins-col h3{font-family:var(--font-d);font-size:16px;font-weight:700;margin-bottom:14px;color:var(--gold-lt)}
+.ins-item{margin-bottom:12px;padding-left:16px;position:relative;font-size:13px;font-weight:300;line-height:1.65;color:rgba(246,244,240,.72)}
+.ins-item::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--gold)}
+
+/* ═══════  DUFLAND  ═══════ */
+.duf-banner{background:linear-gradient(135deg,var(--ink),#1a1520);color:#f6f4f0;border-radius:var(--radius);padding:32px 40px;display:flex;align-items:center;gap:28px;margin-bottom:24px}
+.duf-logo{width:52px;height:52px;border-radius:50%;background:var(--gold);display:grid;place-items:center;font-family:var(--font-d);font-size:24px;font-weight:900;color:var(--ink);flex-shrink:0}
+.duf-info h3{font-family:var(--font-d);font-size:19px;font-weight:700}
+.duf-info p{font-size:12px;color:rgba(246,244,240,.45);font-weight:300;margin-top:2px}
+
+/* ═══════  YOY STRIP  ═══════ */
+.yoy-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.yoy-card{background:var(--paper);border:1px solid var(--line-md);border-radius:var(--radius);padding:22px 24px 20px;position:relative;overflow:hidden;transition:background .2s}
+.yoy-card:hover{background:var(--warm)}
+.yoy-card-accent{position:absolute;top:0;left:0;right:0;height:3px;transition:background .3s}
+.yoy-label{font-size:9.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.yoy-pct{font-family:var(--font-d);font-size:42px;font-weight:900;line-height:1;letter-spacing:-.03em;transition:color .3s}
+.yoy-pct.up{color:var(--green)}.yoy-pct.dn{color:var(--red)}.yoy-pct.nu{color:var(--muted)}
+.yoy-arrow{font-size:18px;margin-right:4px}
+.yoy-vals{font-size:11px;color:var(--muted);margin-top:10px;font-weight:300;line-height:1.6}
+.yoy-vals strong{color:var(--text);font-weight:600}
+.yoy-empty{grid-column:span 4;text-align:center;padding:28px;color:var(--muted);font-size:13px;font-weight:300;background:var(--paper);border:1px solid var(--line-md);border-radius:var(--radius)}
+@media(max-width:1100px){.yoy-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.yoy-strip{grid-template-columns:1fr 1fr}}
+
+/* ═══════  TRANSITIONS  ═══════ */
+.chart-wrap canvas{transition:opacity .25s}
+.fade{opacity:.4}
+
+/* ═══════  RESPONSIVE  ═══════ */
+@media(max-width:1100px){.hero{grid-template-columns:1fr}.hero-stats{grid-template-columns:repeat(4,1fr)}.hs{border-bottom:none;border-right:1px solid rgba(255,255,255,.06)}.hs:last-child{border-right:none}.grid-2,.grid-1-2{grid-template-columns:1fr}.kpi-row{grid-template-columns:repeat(3,1fr)}.insights{grid-template-columns:1fr}}
+@media(max-width:700px){.page{padding:20px 16px}.mast-inner{padding:18px 16px;flex-direction:column;align-items:flex-start}.year-bar-inner{padding:0 16px}.kpi-row{grid-template-columns:1fr 1fr}.hero-body{padding:24px 20px}.hero-h1{font-size:26px}.grid-3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="mast-inner">
+    <div class="mast-brand">
+      <div class="mast-logo">Á</div>
+      <div>
+        <div class="mast-title">Sígarettumarkaðurinn á Íslandi</div>
+        <div class="mast-sub">Heildargreining á vindlingasölu · Gögn frá ÁTVR</div>
+      </div>
+    </div>
+    <div>
+      <div class="mast-tag">Markaðsgreining 2023–2026</div>
+      <div class="mast-date">Uppfært apríl 2026 · Allar tölur í vindlingapökkum</div>
+    </div>
+  </div>
+</header>
+
+<!-- YEAR FILTER BAR -->
+<div class="year-bar">
+  <div class="year-bar-inner">
+    <div class="yb-label">Sía eftir ári</div>
+    <div class="yb-btns">
+      <button class="ybtn active" data-year="all">Allt tímabilið</button>
+      <button class="ybtn y2023" data-year="2023">2023</button>
+      <button class="ybtn y2024" data-year="2024">2024</button>
+      <button class="ybtn y2025" data-year="2025">2025</button>
+      <button class="ybtn y2026" data-year="2026">Q1 2026</button>
+    </div>
+    <div class="yb-info" id="ybInfo">Sýnir: <strong>öll ár samanlagt</strong></div>
+  </div>
+</div>
+
+<main class="page">
+
+<!-- HERO -->
+<section class="hero section ani" style="animation-delay:.05s">
+  <div class="hero-body">
+    <div class="hero-eyebrow">Markaðsyfirlit</div>
+    <h1 class="hero-h1" id="heroTitle">Markaðurinn dróst saman um <em>8,3%</em> á tveimur árum</h1>
+    <p class="hero-desc" id="heroDesc">Frá 6,79 milljónum pakka árið 2023 niður í 6,22 milljónir árið 2025. Rolf Johansen ræður nærri helmingi markaðarins og Winston er langvinsælasta merkið.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-label" id="hs1l">Heildarmarkaður</div><div class="hs-val" id="hs1v">20.736.082</div><div class="hs-note nu" id="hs1n">2023–Q1 2026 samtals</div></div>
+    <div class="hs"><div class="hs-label">Birgjar</div><div class="hs-val" id="hs2v">6</div><div class="hs-note nu" id="hs2n">á tímabilinu</div></div>
+    <div class="hs"><div class="hs-label">Vörumerki</div><div class="hs-val" id="hs3v">17+</div><div class="hs-note nu" id="hs3n">á markaði</div></div>
+    <div class="hs"><div class="hs-label" id="hs4l">Leiðtogi</div><div class="hs-val" id="hs4v">Rolf 49%</div><div class="hs-note nu" id="hs4n">Winston #1 merki</div></div>
+  </div>
+</section>
+
+<!-- KPI -->
+<section class="section">
+  <div class="kpi-row">
+    <div class="kpi ani" style="animation-delay:.1s">
+      <div class="kpi-label">Heildarsala</div>
+      <div class="kpi-val" id="kpi1">20.736.082</div>
+      <div class="kpi-foot" id="kpi1f">pakkar, allt tímabilið</div>
+    </div>
+    <div class="kpi ani" style="animation-delay:.14s">
+      <div class="kpi-label">Stærsti birgi</div>
+      <div class="kpi-val" id="kpi2" style="font-size:18px">Rolf Johansen</div>
+      <div class="kpi-foot" id="kpi2f">49,2% 2025</div>
+    </div>
+    <div class="kpi ani" style="animation-delay:.18s">
+      <div class="kpi-label">Vinsælasta merki</div>
+      <div class="kpi-val" id="kpi3">Winston</div>
+      <div class="kpi-foot" id="kpi3f">37,3% 2025</div>
+    </div>
+    <div class="kpi ani" style="animation-delay:.22s">
+      <div class="kpi-label">Mest í vexti</div>
+      <div class="kpi-val" id="kpi4">Mark 1</div>
+      <div class="kpi-foot" id="kpi4f">+178% frá 2023–2025</div>
+    </div>
+    <div class="kpi ani" style="animation-delay:.26s">
+      <div class="kpi-label">Dufland — Austin</div>
+      <div class="kpi-val" id="kpi5">34.250</div>
+      <div class="kpi-foot" id="kpi5f">pakkar samtals</div>
+    </div>
+  </div>
+</section>
+
+<!-- YOY STRIP -->
+<section class="section" id="yoySection" style="margin-bottom:40px">
+  <div class="sh" style="margin-bottom:18px">
+    <div class="sh-num" style="font-size:32px">↕</div>
+    <div class="sh-text"><h2>Year-over-Year samanburður</h2><p id="yoySubtitle">Breytingar 2025 miðað við 2024 — veldu ár til að sjá samanburð</p></div>
+  </div>
+  <div class="yoy-strip" id="yoyStrip"></div>
+</section>
+
+<!-- §01 MARKAÐUR -->
+<section class="section ani" style="animation-delay:.12s">
+  <div class="sh">
+    <div class="sh-num">01</div>
+    <div class="sh-text"><h2>Heildarmarkaður</h2><p>Heildarfjöldi seldra vindlingapakka</p></div>
+    <span class="sh-badge" id="sh01badge">Allt tímabilið</span>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">Árleg heildarsala</div>
+      <div class="card-sub" id="card01sub">Full-year 2023–2025 og Q1 2026</div>
+      <div class="chart-wrap h280"><canvas id="chYearly"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head">Mánaðarleg sala</div>
+      <div class="card-sub" id="card01msub">Allir birgjar samanlagt eftir mánuðum</div>
+      <div class="chart-wrap h280"><canvas id="chMonthly"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- §02 BIRGJAR -->
+<section class="section ani" style="animation-delay:.17s">
+  <div class="sh">
+    <div class="sh-num">02</div>
+    <div class="sh-text"><h2>Skipting eftir birgjum</h2><p>Markaðshlutdeild og þróun birgja</p></div>
+    <span class="sh-badge" id="sh02badge">Allt tímabilið</span>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">Markaðshlutdeild birgja</div>
+      <div class="card-sub" id="card02sub">Hlutfallsleg skipting í prósentum</div>
+      <div class="chart-wrap h300"><canvas id="chSupPie"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head">Þróun birgja 2023–2026</div>
+      <div class="card-sub">Staflaður súlurit — pakkar eftir birgjum á ári</div>
+      <div class="chart-wrap h300"><canvas id="chSupStack"></canvas></div>
+    </div>
+  </div>
+  <div style="margin-top:24px">
+    <div class="card">
+      <div class="card-head">Hlutdeildaþróun birgja — %</div>
+      <div class="card-sub">Markaðshlutdeild hvers birgja sem % af heildarsölu eftir árum · Smelltu á birgi til að sía</div>
+      <div class="filters" id="supShareFilters"></div>
+      <div class="chart-wrap h260"><canvas id="chSupShare"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- §03 VÖRUMERKI -->
+<section class="section ani" style="animation-delay:.22s">
+  <div class="sh">
+    <div class="sh-num">03</div>
+    <div class="sh-text"><h2>Vörumerki</h2><p>Vinstu merkin á markaðnum</p></div>
+    <span class="sh-badge" id="sh03badge">Allt tímabilið</span>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">Topp 10 vörumerki</div>
+      <div class="card-sub" id="card03sub">Samtals yfir allt tímabilið</div>
+      <div class="chart-wrap h340"><canvas id="chBrandBar"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head">Þróun vörumerkja 2023–2025</div>
+      <div class="card-sub">Topp 6 merki á ári — smelltu til að sía</div>
+      <div class="filters" id="brandFilters"></div>
+      <div class="chart-wrap h280"><canvas id="chBrandLine"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- §04 MÁNAÐARLEG BIRGJAR -->
+<section class="section ani" style="animation-delay:.27s">
+  <div class="sh">
+    <div class="sh-num">04</div>
+    <div class="sh-text"><h2>Mánaðarleg þróun birgja</h2><p>Skipting birgja á mánuðum</p></div>
+    <span class="sh-badge" id="sh04badge">2025</span>
+  </div>
+  <div class="card">
+    <div class="card-head">Birgjar eftir mánuðum</div>
+    <div class="card-sub" id="card04sub">Stacked area chart — magn pakka á mánuði · 2025</div>
+    <div class="chart-wrap h300"><canvas id="chSupMonthly"></canvas></div>
+  </div>
+</section>
+
+<!-- §05 TOPP 20 -->
+<section class="section ani" style="animation-delay:.32s">
+  <div class="sh">
+    <div class="sh-num">05</div>
+    <div class="sh-text"><h2>Topp 20 vörur</h2><p>Mest seldu vörurnar — smelltu á dálk til að raða</p></div>
+    <span class="sh-badge" id="sh05badge">Allt tímabilið</span>
+  </div>
+  <div class="tbl-wrap">
+    <table id="topTable">
+      <thead>
+        <tr>
+          <th style="width:38px">#</th>
+          <th data-col="name">Vara</th>
+          <th data-col="sup">Birgi</th>
+          <th class="num" data-col="total">Heild</th>
+          <th class="num" data-col="y23" id="th23">2023</th>
+          <th class="num" data-col="y24" id="th24">2024</th>
+          <th class="num" data-col="y25" id="th25">2025</th>
+          <th class="num" data-col="y26" id="th26">Q1 2026</th>
+          <th class="num">Br. 23→25</th>
+        </tr>
+      </thead>
+      <tbody id="topBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- §06 DUFLAND -->
+<section class="section ani" style="animation-delay:.42s">
+  <div class="sh">
+    <div class="sh-num">06</div>
+    <div class="sh-text"><h2>Dufland ehf.</h2><p>Sala á Austin merkinu</p></div>
+    <span class="sh-badge" id="sh07badge">Allt tímabilið</span>
+  </div>
+  <div class="duf-banner">
+    <div class="duf-logo">D</div>
+    <div class="duf-info">
+      <h3>Austin á Íslandi</h3>
+      <p>Dufland ehf. kom á markað 2023 · Frá 1.000 pökkum árið 2023 upp í 14.410 pakka árið 2025 · +1.341% vöxtur</p>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-head">Dufland heildarsala</div>
+      <div class="card-sub">Pakkar á ári</div>
+      <div class="chart-wrap h240"><canvas id="chDufYear"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head">Austin afbrigði</div>
+      <div class="card-sub" id="dufPieSub">Skipting á milli tegunda 2025</div>
+      <div class="chart-wrap h240"><canvas id="chDufPie"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-head">Markaðshlutdeild</div>
+      <div class="card-sub">Dufland hlutfall af heildarmarkaði</div>
+      <div class="chart-wrap h240"><canvas id="chDufShare"></canvas></div>
+    </div>
+  </div>
+  <div style="margin-top:20px">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Austin vara</th><th class="num" id="dufTh23">2023</th><th class="num" id="dufTh24">2024</th><th class="num" id="dufTh25">2025</th><th class="num" id="dufTh26">Q1 2026</th><th class="num">Breyting 23→25</th></tr></thead>
+        <tbody id="dufBody">
+          <tr><td>Austin Red</td><td class="num" id="dufRed23">350</td><td class="num" id="dufRed24">6.660</td><td class="num" id="dufRed25">6.210</td><td class="num" id="dufRed26">2.450</td><td class="num"><span class="badge up">+1.674%</span></td></tr>
+          <tr><td>Austin Menthol</td><td class="num" id="dufMen23">300</td><td class="num" id="dufMen24">4.540</td><td class="num" id="dufMen25">4.600</td><td class="num" id="dufMen26">2.050</td><td class="num"><span class="badge up">+1.433%</span></td></tr>
+          <tr><td>Austin Gold</td><td class="num" id="dufGol23">350</td><td class="num" id="dufGol24">2.220</td><td class="num" id="dufGol25">3.600</td><td class="num" id="dufGol26">920</td><td class="num"><span class="badge up">+929%</span></td></tr>
+          <tr style="font-weight:600;background:rgba(184,150,62,.06)"><td>Samtals</td><td class="num" id="dufTot23">1.000</td><td class="num" id="dufTot24">13.420</td><td class="num" id="dufTot25">14.410</td><td class="num" id="dufTot26">5.420</td><td class="num"><span class="badge up">+1.341%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- §07 INNSÝN -->
+<section class="section ani" style="animation-delay:.47s">
+  <div class="sh">
+    <div class="sh-num">07</div>
+    <div class="sh-text"><h2>Lykilinnsýn</h2><p>Helstu niðurstöður og þróun</p></div>
+  </div>
+  <div class="insights">
+    <div class="ins-col">
+      <h3>Markaðsþróun</h3>
+      <div class="ins-item">Heildarmarkaðurinn dróst saman um <strong>8,3%</strong> frá 2023 til 2025 — úr 6,79M niður í 6,22M pakka.</div>
+      <div class="ins-item"><strong>Q1 2026</strong> sýnir jákvæða þróun: +4,7% samanborið við Q1 2025 (1.326.230 vs 1.265.750 pakkar).</div>
+      <div class="ins-item"><strong>Winston</strong> er langstærsta merkið með 37,3% markaðshlutdeild 2025 — tvöfalt stærra en Marlboro.</div>
+      <div class="ins-item"><strong>Fitjaborg ehf</strong> hvarf af markaðnum — 79.950 pakkar 2023 niður í 0 frá 2025.</div>
+    </div>
+    <div class="ins-col">
+      <h3>Tækifæri</h3>
+      <div class="ins-item"><strong>Mark 1</strong> er eina stóra merkið í miklum vexti: +178% frá 2023 (44.480) til 2025 (123.640 pakkar).</div>
+      <div class="ins-item"><strong>Rolf Johansen</strong> hefur styrkt hlutdeild sína — frá 48,7% í 49,2% þrátt fyrir samdrátt markaðar.</div>
+      <div class="ins-item"><strong>Camel</strong> er eina topp-5 merkið sem jók sölu milli 2024 og 2025 (+6,5%).</div>
+      <div class="ins-item"><strong>Dufland</strong> sýndi stórkostlegan vöxt: 1.000 → 14.410 pakka. Markaðshlutdeild 0,23% 2025.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer style="background:var(--ink);color:rgba(246,244,240,.3);text-align:center;padding:24px;font-size:11px;font-weight:300;letter-spacing:.03em">
+  Greining byggð á sölugögnum ÁTVR 2023–2026 · Unnið af Dufland ehf. · Allar tölur í vindlingapökkum
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════
+   ALL DATA
+══════════════════════════════════════════════ */
+const D = {
+  yearly: {all:20736082, '2023':6785430, '2024':6403430, '2025':6222992, '2026':1326230},
+
+  // Supplier totals by year (+ 'all' = sum)
+  sup: {
+    'Rolf Johansen':    {all:10122992,'2023':3303830,'2024':3109000,'2025':3062422,'2026':647740},
+    'Ó.Johnson & Kaaber':{all:6494090,'2023':2122390,'2024':2014650,'2025':1956850,'2026':400200},
+    'Globus':           {all:3455720,'2023':1162270,'2024':1072840,'2025':993890,'2026':226720},
+    'Urriðafoss':       {all:547240,'2023':115990,'2024':189680,'2025':195420,'2026':46150},
+    'Dufland':          {all:34250,'2023':1000,'2024':13420,'2025':14410,'2026':5420},
+    'Fitjaborg':        {all:83790,'2023':79950,'2024':3840,'2025':0,'2026':0},
+  },
+
+  // Monthly totals (all suppliers) per year
+  monthly: {
+    '2023':[382267,485914,597630,513004,616655,586920,621790,611470,542100,568590,567030,692060],
+    '2024':[407200,474790,513620,531680,559640,528100,606500,518390,514700,537110,506320,705380],
+    '2025':[390200,422420,519850,512750,498330,532410,596630,484300,550490,535790,467670,712152],
+    '2026':[357110,432070,537050,0,0,0,0,0,0,0,0,0],
+  },
+
+  // Supplier monthly per year
+  supMonthly: {"2023":{"Rolf Johansen":[185420,234190,284570,247110,302650,295220,307000,304410,263500,274780,275370,329610],"Ó.Johnson & Kaaber":[109790,145890,186300,162180,194010,186440,197050,186310,172670,183270,183090,215390],"Globus":[70260,86920,101900,87250,105440,99620,105200,107660,92490,97520,94530,113480],"Urriðafoss":[4790,5820,8880,8710,10010,0,7640,9460,10340,9390,13270,27680],"Dufland":[0,0,0,0,0,0,0,0,0,0,0,1000],"Fitjaborg":[12007,13094,15980,7754,4545,5640,4900,3630,3100,3630,770,4900]},"2024":{"Rolf Johansen":[202290,232770,244830,256430,270820,257790,294200,255300,253600,258020,245750,337200],"Ó.Johnson & Kaaber":[118020,146150,164510,165530,176950,165140,188770,157110,160970,174570,161960,234970],"Globus":[72340,83320,90060,91810,94170,87720,103380,86550,83030,86460,82530,111470],"Urriðafoss":[11390,10230,12800,16970,16860,16510,18890,18620,15340,16510,15090,20470],"Dufland":[1250,850,1150,750,840,940,1260,810,1760,1550,990,1270],"Fitjaborg":[1910,1470,270,190,0,0,0,0,0,0,0,0]},"2025":{"Rolf Johansen":[197180,203850,250680,251970,244480,259350,297150,239750,275270,264050,227550,351142],"Ó.Johnson & Kaaber":[114590,133290,168690,161030,160640,168130,182920,150720,168140,168210,151120,229370],"Globus":[64070,69840,82930,82200,79480,86870,97800,78180,86460,82790,73990,109280],"Urriðafoss":[13360,14340,16520,16460,13050,17410,18460,15380,17620,18050,14100,20670],"Dufland":[1000,1100,1030,1090,680,650,300,270,3000,2690,910,1690],"Fitjaborg":[0,0,0,0,0,0,0,0,0,0,0,0]},"2026":{"Rolf Johansen":[178630,208980,260130,0,0,0,0,0,0,0,0,0],"Ó.Johnson & Kaaber":[102040,129910,168250,0,0,0,0,0,0,0,0,0],"Globus":[61240,75090,90390,0,0,0,0,0,0,0,0,0],"Urriðafoss":[13240,15630,17280,0,0,0,0,0,0,0,0,0],"Dufland":[1960,2460,1000,0,0,0,0,0,0,0,0,0],"Fitjaborg":[0,0,0,0,0,0,0,0,0,0,0,0]}},
+
+  // Brand by year
+  brand: {"Winston":{"all":7759010,"2023":2550980,"2024":2397280,"2025":2320170,"2026":490580},"Marlboro":{"all":5697600,"2023":1852700,"2024":1763100,"2025":1727290,"2026":354510},"Capri":{"all":2162440,"2023":706870,"2024":666560,"2025":637900,"2026":151110},"Camel":{"all":2031560,"2023":630650,"2024":611690,"2025":651740,"2026":137480},"L&M":{"all":796490,"2023":269690,"2024":251550,"2025":229560,"2026":45690},"Kent":{"all":542400,"2023":172540,"2024":176290,"2025":159290,"2026":34280},"Prince":{"all":352830,"2023":137200,"2024":107380,"2025":89020,"2026":19230},"Gold":{"all":332410,"2023":122200,"2024":100030,"2025":90500,"2026":19680},"Nero":{"all":293900,"2023":106510,"2024":100640,"2025":71780,"2026":14970},"Mark 1":{"all":289260,"2023":44480,"2024":89960,"2025":123640,"2026":31180}},
+
+  // Country by year
+  country: {"Bandaríkin":{"all":6621220,"2023":2211260,"2024":2040730,"2025":1950070,"2026":419160},"Sviss":{"all":6047920,"2023":1922990,"2024":1861810,"2025":1868720,"2026":394400},"Þýskaland":{"all":4352640,"2023":1368790,"2024":1338560,"2025":1363050,"2026":282240},"Holland":{"all":1935410,"2023":646180,"2024":605460,"2025":558850,"2026":124920},"Pólland":{"all":725190,"2023":236950,"2024":231820,"2025":211430,"2026":44990},"Danmörk":{"all":352830,"2023":137200,"2024":107380,"2025":89020,"2026":19230},"Serbía":{"all":293900,"2023":106510,"2024":100640,"2025":71780,"2026":14970},"Annað":{"all":408930,"2023":155550,"2024":117030,"2025":110072,"2026":26320}},
+
+  // Top 20 products
+  products:[{"name":"Winston Classic Red Box","sup":"Rolf Johansen","y23":577980,"y24":537040,"y25":521330,"y26":108280},{"name":"Marlboro Gold Box","sup":"Ó.Johnson & Kaaber","y23":562570,"y24":533370,"y25":531830,"y26":108050},{"name":"Winston Blue Box","sup":"Rolf Johansen","y23":454690,"y24":426600,"y25":417710,"y26":88350},{"name":"Marlboro Red Box","sup":"Ó.Johnson & Kaaber","y23":448300,"y24":414240,"y25":409160,"y26":79380},{"name":"Capri Menthol 100's","sup":"Globus","y23":390160,"y24":362070,"y25":349120,"y26":83840},{"name":"Winston Classic Red 100's Box","sup":"Rolf Johansen","y23":351170,"y24":338220,"y25":334350,"y26":70190},{"name":"Capri 100's","sup":"Globus","y23":316710,"y24":304490,"y25":288780,"y26":67270},{"name":"Camel Blue Box","sup":"Rolf Johansen","y23":293630,"y24":285680,"y25":304490,"y26":65290},{"name":"Camel KSF Box","sup":"Rolf Johansen","y23":246590,"y24":238180,"y25":254650,"y26":52470},{"name":"Winston Menthol White Box","sup":"Rolf Johansen","y23":257880,"y24":227700,"y25":201180,"y26":42300},{"name":"Marlboro Red 100's Box","sup":"Ó.Johnson & Kaaber","y23":230460,"y24":219790,"y25":209970,"y26":43540},{"name":"Marlboro Gold 100's Box","sup":"Ó.Johnson & Kaaber","y23":210060,"y24":200540,"y25":189390,"y26":38400},{"name":"Marlboro Fine Beyond 20's","sup":"Ó.Johnson & Kaaber","y23":188390,"y24":187920,"y25":166990,"y26":36390},{"name":"Winston Balanced Blue 100's Bo","sup":"Rolf Johansen","y23":141250,"y24":173950,"y25":164270,"y26":36610},{"name":"L&M Blue KSF Box","sup":"Ó.Johnson & Kaaber","y23":163360,"y24":158220,"y25":148510,"y26":30520},{"name":"Winston Slims 100's","sup":"Rolf Johansen","y23":156710,"y24":147350,"y25":146600,"y26":33080},{"name":"Winston XSpression Box","sup":"Rolf Johansen","y23":138190,"y24":131640,"y25":126020,"y26":26440},{"name":"Kent Blue Futura KSF","sup":"Globus","y23":133560,"y24":135740,"y25":120400,"y26":26340},{"name":"Winston White","sup":"Rolf Johansen","y23":131160,"y24":126670,"y25":125990,"y26":27280},{"name":"Marlboro Ice Blast 20's Box","sup":"Ó.Johnson & Kaaber","y23":126470,"y24":120260,"y25":123890,"y26":27400}],
+
+  // Dufland products by year
+  duf: {
+    red:   {'2023':350,'2024':6660,'2025':6210,'2026':2450},
+    men:   {'2023':300,'2024':4540,'2025':4600,'2026':2050},
+    gold:  {'2023':350,'2024':2220,'2025':3600,'2026':920},
+    total: {'2023':1000,'2024':13420,'2025':14410,'2026':5420},
+  }
+};
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+Chart.defaults.font.family = "'DM Sans',system-ui,sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#7a756d';
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.pointStyleWidth = 8;
+Chart.defaults.plugins.legend.labels.padding = 14;
+Chart.defaults.plugins.tooltip.backgroundColor = '#0a0a0b';
+Chart.defaults.plugins.tooltip.titleFont = {family:"'DM Sans'",size:11,weight:600};
+Chart.defaults.plugins.tooltip.bodyFont = {family:"'DM Sans'",size:11,weight:300};
+Chart.defaults.plugins.tooltip.padding = 10;
+Chart.defaults.plugins.tooltip.cornerRadius = 3;
+
+const fmt = n => Math.round(n).toLocaleString('is-IS');
+const GOLD='#b8963e',INK='#0a0a0b';
+const MONTHS=['Jan','Feb','Mar','Apr','Maí','Jún','Júl','Ágú','Sep','Okt','Nóv','Des'];
+const YEARS=['2023','2024','2025','2026'];
+const SUP_NAMES=['Rolf Johansen','Ó.Johnson & Kaaber','Globus','Urriðafoss','Dufland','Fitjaborg'];
+const SUP_COLS={
+  'Rolf Johansen':'#1e3a5f','Ó.Johnson & Kaaber':'#c0392b','Globus':'#2a7a4b',
+  'Urriðafoss':'#8b5cf6','Dufland':'#b8963e','Fitjaborg':'#94a3b8'
+};
+const BRAND_NAMES=['Winston','Marlboro','Capri','Camel','L&M','Kent','Prince','Gold','Nero','Mark 1'];
+const BRAND_COLS={'Winston':'#1e3a5f','Marlboro':'#c0392b','Capri':'#2a7a4b','Camel':'#8b5cf6','L&M':'#e67e22','Mark 1':'#b8963e','Kent':'#0891b2','Prince':'#d946ef','Gold':'#ca8a04','Nero':'#64748b'};
+const YR_LABELS={'all':'Allt tímabilið','2023':'2023','2024':'2024','2025':'2025','2026':'Q1 2026'};
+const YR_COLORS={'2023':'#94a3b8','2024':'#1e3a5f','2025':GOLD,'2026':'#c0392b'};
+
+/* ══════════════════════════════════════════════
+   YOY DATA  (current vs prior year)
+══════════════════════════════════════════════ */
+const YOY = {
+  'all': [
+    {label:'Heildarsala',       sub:'2025 vs 2024',  curr:6222992,  prev:6403430,  pct:-2.8,  fmt:v=>fmt(v)+' pakkar'},
+    {label:'Rolf Johansen %',   sub:'Hlutdeild 2025 vs 2024', curr:49.21, prev:48.55, pct:+1.4,  fmt:v=>v.toFixed(2)+'%'},
+    {label:'Winston sala',      sub:'2025 vs 2024',  curr:2320170,  prev:2397280,  pct:-3.2,  fmt:v=>fmt(v)+' pakkar'},
+    {label:'Dufland sala',      sub:'2025 vs 2024',  curr:14410,    prev:13420,    pct:+7.4,  fmt:v=>fmt(v)+' pakkar'},
+  ],
+  '2023': null, // base year — no prior
+  '2024': [
+    {label:'Heildarsala',       sub:'2024 vs 2023',  curr:6403430,  prev:6785430,  pct:-5.6,  fmt:v=>fmt(v)+' pakkar'},
+    {label:'Rolf Johansen %',   sub:'Hlutdeild',     curr:48.55,    prev:48.69,    pct:-0.3,  fmt:v=>v.toFixed(2)+'%'},
+    {label:'Winston sala',      sub:'2024 vs 2023',  curr:2397280,  prev:2550980,  pct:-6.0,  fmt:v=>fmt(v)+' pakkar'},
+    {label:'Dufland sala',      sub:'2024 vs 2023',  curr:13420,    prev:1000,     pct:+1242, fmt:v=>fmt(v)+' pakkar'},
+  ],
+  '2025': [
+    {label:'Heildarsala',       sub:'2025 vs 2024',  curr:6222992,  prev:6403430,  pct:-2.8,  fmt:v=>fmt(v)+' pakkar'},
+    {label:'Rolf Johansen %',   sub:'Hlutdeild',     curr:49.21,    prev:48.55,    pct:+1.4,  fmt:v=>v.toFixed(2)+'%'},
+    {label:'Winston sala',      sub:'2025 vs 2024',  curr:2320170,  prev:2397280,  pct:-3.2,  fmt:v=>fmt(v)+' pakkar'},
+    {label:'Dufland sala',      sub:'2025 vs 2024',  curr:14410,    prev:13420,    pct:+7.4,  fmt:v=>fmt(v)+' pakkar'},
+  ],
+  '2026': [
+    {label:'Q1 sala',           sub:'Q1 2026 vs Q1 2025', curr:1326230, prev:1332470, pct:-0.5, fmt:v=>fmt(v)+' pakkar'},
+    {label:'Rolf Johansen %',   sub:'Hlutdeild Q1 2026',  curr:48.84,   prev:49.21,  pct:-0.8, fmt:v=>v.toFixed(2)+'%'},
+    {label:'Globus %',          sub:'Hlutdeild Q1 2026',  curr:17.10,   prev:15.97,  pct:+7.1, fmt:v=>v.toFixed(2)+'%'},
+    {label:'Dufland sala',      sub:'Q1 2026 vs Q1 2025', curr:5420,    prev:3130,   pct:+73.2,fmt:v=>fmt(v)+' pakkar'},
+  ],
+};
+
+function renderYoY(yr){
+  const strip = document.getElementById('yoyStrip');
+  const sub   = document.getElementById('yoySubtitle');
+  const items = YOY[yr];
+
+  if(!items){
+    strip.innerHTML = `<div class="yoy-empty">2023 er grunnárið — engar samanburðartölur eru tiltækar fyrir þetta ár</div>`;
+    sub.textContent = 'Veldu 2024, 2025 eða Q1 2026 til að sjá YoY samanburð';
+    return;
+  }
+
+  const subtitles = {
+    all:'Breytingar 2025 miðað við 2024 — veldu ár til að sjá aðra samanburðartíma',
+    '2024':'Breytingar árið 2024 miðað við 2023',
+    '2025':'Breytingar árið 2025 miðað við 2024',
+    '2026':'Breytingar Q1 2026 miðað við Q1 2025',
+  };
+  sub.textContent = subtitles[yr] || subtitles.all;
+
+  strip.innerHTML = items.map(item => {
+    const cls = item.pct > 0 ? 'up' : item.pct < 0 ? 'dn' : 'nu';
+    const arrow = item.pct > 0 ? '↑' : item.pct < 0 ? '↓' : '→';
+    const accentColor = item.pct > 0 ? 'var(--green)' : item.pct < 0 ? 'var(--red)' : 'var(--line-md)';
+    const pctStr = (item.pct > 0 ? '+' : '') + item.pct.toFixed(1) + '%';
+    return `
+      <div class="yoy-card">
+        <div class="yoy-card-accent" style="background:${accentColor}"></div>
+        <div class="yoy-label">${item.label}</div>
+        <div class="yoy-pct ${cls}"><span class="yoy-arrow">${arrow}</span>${pctStr}</div>
+        <div class="yoy-vals">
+          <strong>${item.fmt(item.curr)}</strong><br>
+          <span style="color:var(--muted)">frá ${item.fmt(item.prev)}</span><br>
+          <span style="font-size:10px;letter-spacing:.03em">${item.sub}</span>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════
+   BUILD ALL CHARTS
+══════════════════════════════════════════════ */
+const C = {}; // chart instances
+
+/* ── 01 Yearly bar ── */
+C.yearly = new Chart(document.getElementById('chYearly'),{
+  type:'bar',
+  data:{
+    labels:['2023','2024','2025','Q1 2026'],
+    datasets:[{data:[6785430,6403430,6222992,1326230],
+      backgroundColor:[YR_COLORS['2023'],YR_COLORS['2024'],YR_COLORS['2025'],YR_COLORS['2026']],
+      borderRadius:3,barPercentage:.6}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.parsed.y)+' pakkar'}}},
+    scales:{y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>(v/1e6).toFixed(2)+'M'},beginAtZero:true},x:{grid:{display:false}}}
+  }
+});
+
+/* ── 01 Monthly lines ── */
+function buildMonthlyDatasets(yr){
+  if(yr==='all'){
+    return YEARS.map(y=>({
+      label:y==='2026'?'Q1 2026':y, data:D.monthly[y],
+      borderColor:YR_COLORS[y], backgroundColor:YR_COLORS[y]+'12',
+      fill:false, tension:.35, pointRadius:y==='2025'?3:2, borderWidth:y==='2025'?2.5:1.5,
+      pointBackgroundColor:YR_COLORS[y],
+      borderDash:y==='2026'?[5,4]:undefined
+    }));
+  }
+  return [{
+    label:yr==='2026'?'Q1 2026':yr, data:D.monthly[yr],
+    borderColor:YR_COLORS[yr], backgroundColor:YR_COLORS[yr]+'20',
+    fill:true, tension:.35, pointRadius:3, borderWidth:2.5, pointBackgroundColor:YR_COLORS[yr]
+  }];
+}
+C.monthly = new Chart(document.getElementById('chMonthly'),{
+  type:'line',
+  data:{labels:MONTHS, datasets:buildMonthlyDatasets('all')},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom'}},
+    scales:{y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>(v/1000).toFixed(0)+'k'},beginAtZero:false},x:{grid:{display:false}}}
+  }
+});
+
+/* ── 02 Supplier donut ── */
+function supPieData(yr){
+  return SUP_NAMES.map(s=>D.sup[s][yr]||0);
+}
+C.supPie = new Chart(document.getElementById('chSupPie'),{
+  type:'doughnut',
+  data:{labels:SUP_NAMES, datasets:[{data:supPieData('all'),backgroundColor:SUP_NAMES.map(s=>SUP_COLS[s]),borderWidth:2,borderColor:'#faf8f5',hoverOffset:8}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+    plugins:{legend:{position:'bottom',labels:{font:{size:10}}},
+      tooltip:{callbacks:{label:ctx=>{
+        const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+        return ctx.label+': '+fmt(ctx.parsed)+' ('+(ctx.parsed/total*100).toFixed(1)+'%)';
+      }}}
+    }
+  }
+});
+
+/* ── 02 Supplier stacked bar (static, shows all years) ── */
+C.supStack = new Chart(document.getElementById('chSupStack'),{
+  type:'bar',
+  data:{
+    labels:['2023','2024','2025','Q1 2026'],
+    datasets: SUP_NAMES.map(s=>({
+      label:s, data:YEARS.map(y=>D.sup[s][y]||0),
+      backgroundColor:SUP_COLS[s]
+    }))
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},
+    scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>(v/1e6).toFixed(1)+'M'}}}
+  }
+});
+
+/* ── 02 Supplier share % lines (filterable) ── */
+const SUP_SHARE_LABELS = ['2023','2024','2025','Q1 2026'];
+const SUP_SHARE_TOTALS = [6785430,6403430,6222992,1326230];
+const SUP_SHARE_NAMES = ['Rolf Johansen','Ó.Johnson & Kaaber','Globus','Urriðafoss','Dufland'];
+let activeSuppliers = new Set(SUP_SHARE_NAMES);
+let supShareChart;
+
+function supSharePct(s){
+  return YEARS.map((y,i)=>{
+    const v = D.sup[s][y]||0;
+    return parseFloat((v/SUP_SHARE_TOTALS[i]*100).toFixed(2));
+  });
+}
+
+function drawSupShare(){
+  if(supShareChart) supShareChart.destroy();
+
+  const active = SUP_SHARE_NAMES.filter(s=>activeSuppliers.has(s));
+  const isSingle = active.length === 1;
+
+  const datasets = active.map(s=>({
+    label: s,
+    data: supSharePct(s),
+    borderColor: SUP_COLS[s],
+    backgroundColor: SUP_COLS[s]+(isSingle?'22':'14'),
+    fill: isSingle,
+    tension:.3,
+    pointRadius:5,
+    pointHoverRadius:8,
+    borderWidth: isSingle ? 3 : 2.5,
+    pointBackgroundColor: SUP_COLS[s],
+    pointBorderColor:'#faf8f5',
+    pointBorderWidth:2,
+  }));
+
+  // Dynamic y-axis: if single supplier zoom in
+  let yMax = 60, yMin = 0;
+  if(isSingle){
+    const vals = supSharePct(active[0]);
+    const mn = Math.min(...vals), mx = Math.max(...vals);
+    const pad = Math.max((mx - mn) * 0.5, 1);
+    yMin = Math.max(0, parseFloat((mn - pad).toFixed(1)));
+    yMax = parseFloat((mx + pad).toFixed(1));
+  }
+
+  supShareChart = new Chart(document.getElementById('chSupShare'),{
+    type:'line',
+    data:{ labels:SUP_SHARE_LABELS, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index', intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          label:ctx=>' '+ctx.dataset.label+': '+ctx.parsed.y.toFixed(2)+'%',
+          title:ctx=>ctx[0].label
+        }}
+      },
+      scales:{
+        y:{
+          grid:{color:'rgba(0,0,0,.05)'},
+          ticks:{callback:v=>v+'%'},
+          min:yMin, max:yMax,
+          title:{display:true, text:'Markaðshlutdeild %', font:{size:10}, color:'#7a756d'}
+        },
+        x:{grid:{display:false}}
+      }
+    }
+  });
+}
+
+// Build supplier filter buttons
+const supShareFiltersEl = document.getElementById('supShareFilters');
+// "Allir" toggle button
+const allBtn = document.createElement('button');
+allBtn.className = 'fbtn';
+allBtn.textContent = 'Allir';
+allBtn.style.cssText = 'background:var(--ink);border-color:var(--ink);color:#f6f4f0';
+allBtn.onclick = ()=>{
+  const allActive = activeSuppliers.size === SUP_SHARE_NAMES.length;
+  if(allActive){
+    // deselect all
+    activeSuppliers.clear();
+    supShareFiltersEl.querySelectorAll('.sup-fbtn').forEach(b=>{
+      b.classList.remove('active');
+      const s=b.dataset.sup;
+      b.style.cssText=`background:transparent;border-color:${SUP_COLS[s]};color:${SUP_COLS[s]}`;
+    });
+    allBtn.style.cssText='background:transparent;border-color:var(--line-md);color:var(--text)';
+  } else {
+    // select all
+    SUP_SHARE_NAMES.forEach(s=>activeSuppliers.add(s));
+    supShareFiltersEl.querySelectorAll('.sup-fbtn').forEach(b=>{
+      b.classList.add('active');
+      const s=b.dataset.sup;
+      b.style.cssText=`background:${SUP_COLS[s]};border-color:${SUP_COLS[s]};color:#fff`;
+    });
+    allBtn.style.cssText='background:var(--ink);border-color:var(--ink);color:#f6f4f0';
+  }
+  drawSupShare();
+};
+supShareFiltersEl.appendChild(allBtn);
+
+// Separator
+const sep = document.createElement('span');
+sep.style.cssText='width:1px;height:22px;background:var(--line-md);margin:0 4px;align-self:center;display:inline-block';
+supShareFiltersEl.appendChild(sep);
+
+SUP_SHARE_NAMES.forEach(s=>{
+  const btn = document.createElement('button');
+  btn.className = 'fbtn sup-fbtn active';
+  btn.dataset.sup = s;
+  // Short display name
+  const shortName = s==='Ó.Johnson & Kaaber'?'Ó.Johnson':s==='Rolf Johansen'?'Rolf Johansen':s;
+  btn.textContent = shortName;
+  btn.style.cssText = `background:${SUP_COLS[s]};border-color:${SUP_COLS[s]};color:#fff`;
+  btn.onclick = ()=>{
+    if(activeSuppliers.has(s)){
+      activeSuppliers.delete(s);
+      btn.classList.remove('active');
+      btn.style.cssText=`background:transparent;border-color:${SUP_COLS[s]};color:${SUP_COLS[s]}`;
+    } else {
+      activeSuppliers.add(s);
+      btn.classList.add('active');
+      btn.style.cssText=`background:${SUP_COLS[s]};border-color:${SUP_COLS[s]};color:#fff`;
+    }
+    // Update "Allir" button state
+    if(activeSuppliers.size===SUP_SHARE_NAMES.length){
+      allBtn.style.cssText='background:var(--ink);border-color:var(--ink);color:#f6f4f0';
+    } else {
+      allBtn.style.cssText='background:transparent;border-color:var(--line-md);color:var(--text)';
+    }
+    drawSupShare();
+  };
+  supShareFiltersEl.appendChild(btn);
+});
+
+drawSupShare();
+
+/* ── 03 Brand bar ── */
+function brandBarData(yr){
+  return BRAND_NAMES.map(b=>D.brand[b][yr]||0);
+}
+C.brandBar = new Chart(document.getElementById('chBrandBar'),{
+  type:'bar',
+  data:{labels:BRAND_NAMES, datasets:[{data:brandBarData('all'),backgroundColor:BRAND_NAMES.map(b=>BRAND_COLS[b]),borderRadius:3,barPercentage:.72}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.parsed.x)+' pakkar'}}},
+    scales:{x:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>(v/1e6).toFixed(1)+'M'},beginAtZero:true},y:{grid:{display:false}}}
+  }
+});
+
+/* ── 03 Brand trend lines ── */
+const BRAND_LINE_NAMES=['Winston','Marlboro','Capri','Camel','L&M','Mark 1'];
+let activeBrands = new Set(BRAND_LINE_NAMES);
+let brandLineChart;
+
+function drawBrandLines(){
+  if(brandLineChart) brandLineChart.destroy();
+  const ds = BRAND_LINE_NAMES.filter(b=>activeBrands.has(b)).map(b=>({
+    label:b, data:['2023','2024','2025'].map(y=>D.brand[b][y]||0),
+    borderColor:BRAND_COLS[b], backgroundColor:BRAND_COLS[b]+'18',
+    fill:false, tension:.3, pointRadius:4, borderWidth:2.5, pointBackgroundColor:BRAND_COLS[b]
+  }));
+  brandLineChart = new Chart(document.getElementById('chBrandLine'),{
+    type:'line',
+    data:{labels:['2023','2024','2025'],datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>(v/1e6).toFixed(2)+'M'},beginAtZero:false},x:{grid:{display:false}}}
+    }
+  });
+}
+// Brand filter buttons
+const filtersEl = document.getElementById('brandFilters');
+BRAND_LINE_NAMES.forEach(b=>{
+  const btn=document.createElement('button');
+  btn.className='fbtn active';
+  btn.textContent=b;
+  btn.style.cssText=`background:${BRAND_COLS[b]};border-color:${BRAND_COLS[b]};color:#fff`;
+  btn.onclick=()=>{
+    if(activeBrands.has(b)){
+      activeBrands.delete(b);
+      btn.classList.remove('active');
+      btn.style.cssText=`background:transparent;border-color:${BRAND_COLS[b]};color:${BRAND_COLS[b]}`;
+    } else {
+      activeBrands.add(b);
+      btn.classList.add('active');
+      btn.style.cssText=`background:${BRAND_COLS[b]};border-color:${BRAND_COLS[b]};color:#fff`;
+    }
+    drawBrandLines();
+  };
+  filtersEl.appendChild(btn);
+});
+drawBrandLines();
+
+/* ── 04 Supplier monthly stacked area ── */
+function buildSupMonthlyDs(yr){
+  const yrKey = yr==='all'?'2025':yr; // default to 2025 for "all"
+  return SUP_NAMES.map(s=>({
+    label:s, data:D.supMonthly[yrKey][s],
+    borderColor:SUP_COLS[s], backgroundColor:SUP_COLS[s]+'18',
+    fill:true, tension:.35, pointRadius:1.5, borderWidth:2
+  }));
+}
+C.supMonthly = new Chart(document.getElementById('chSupMonthly'),{
+  type:'line',
+  data:{labels:MONTHS, datasets:buildSupMonthlyDs('all')},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},
+    scales:{y:{stacked:true,grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>(v/1000).toFixed(0)+'k'}},x:{grid:{display:false}}}
+  }
+});
+
+/* ── 05 Top products table ── */
+let tableSortCol='total', tableSortAsc=false;
+function getColVal(p,col){
+  if(col==='total') return (p.y23||0)+(p.y24||0)+(p.y25||0)+(p.y26||0);
+  if(col==='y23') return p.y23||0;
+  if(col==='y24') return p.y24||0;
+  if(col==='y25') return p.y25||0;
+  if(col==='y26') return p.y26||0;
+  return 0;
+}
+
+function renderTable(sortCol, sortAsc, highlightCol){
+  const sc = sortCol||tableSortCol;
+  const sa = sortAsc!==undefined ? sortAsc : tableSortAsc;
+  const sorted = [...D.products].sort((a,b)=>sa?(getColVal(a,sc)-getColVal(b,sc)):(getColVal(b,sc)-getColVal(a,sc)));
+  const tb = document.getElementById('topBody');
+  tb.innerHTML='';
+  // Update active column headers
+  document.querySelectorAll('#topTable th').forEach(th=>{th.classList.remove('active-col')});
+  const colIdMap={'total':3,'y23':4,'y24':5,'y25':6,'y26':7};
+  if(colIdMap[sc]!==undefined){
+    document.querySelectorAll('#topTable th')[colIdMap[sc]]?.classList.add('active-col');
+  }
+  sorted.forEach((p,i)=>{
+    const chg = p.y23>0?((p.y25-p.y23)/p.y23*100).toFixed(1):'—';
+    const chgCls = parseFloat(chg)>0?'up':parseFloat(chg)<0?'dn':'nu';
+    const rCls = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const hc = highlightCol;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><span class="rank ${rCls}">${i+1}</span></td>
+      <td style="font-weight:500">${p.name}</td>
+      <td style="font-size:11px;color:var(--muted)">${p.sup}</td>
+      <td class="num${hc==='total'?' active-col':''}" style="font-weight:600">${fmt((p.y23||0)+(p.y24||0)+(p.y25||0)+(p.y26||0))}</td>
+      <td class="num${hc==='y23'?' active-col':''}">${fmt(p.y23||0)}</td>
+      <td class="num${hc==='y24'?' active-col':''}">${fmt(p.y24||0)}</td>
+      <td class="num${hc==='y25'?' active-col':''}">${fmt(p.y25||0)}</td>
+      <td class="num${hc==='y26'?' active-col':''}">${fmt(p.y26||0)}</td>
+      <td class="num"><span class="badge ${chgCls}">${chg!=='—'?(parseFloat(chg)>0?'+':'')+chg+'%':chg}</span></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+// Table sort click
+document.querySelectorAll('#topTable th[data-col]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const col=th.dataset.col;
+    if(['total','y23','y24','y25','y26'].includes(col)){
+      if(tableSortCol===col) tableSortAsc=!tableSortAsc; else {tableSortCol=col;tableSortAsc=false;}
+      renderTable(tableSortCol,tableSortAsc,activeYear==='all'?'total':YEAR_TO_COL[activeYear]);
+    }
+  });
+});
+renderTable('total',false,'total');
+
+/* ── 06 Dufland charts ── */
+C.dufYear = new Chart(document.getElementById('chDufYear'),{
+  type:'bar',
+  data:{labels:['2023','2024','2025','Q1 2026'],
+    datasets:[{data:[1000,13420,14410,5420],
+      backgroundColor:[GOLD+'55',GOLD+'77',GOLD,GOLD+'44'],borderRadius:3,barPercentage:.6}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmt(ctx.parsed.y)+' pakkar'}}},
+    scales:{y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>fmt(v)},beginAtZero:true},x:{grid:{display:false}}}
+  }
+});
+
+function dufPieData(yr){
+  const y=yr==='all'?'2025':yr;
+  return [D.duf.red[y]||0,D.duf.men[y]||0,D.duf.gold[y]||0];
+}
+C.dufPie = new Chart(document.getElementById('chDufPie'),{
+  type:'doughnut',
+  data:{labels:['Austin Red','Austin Menthol','Austin Gold'],
+    datasets:[{data:dufPieData('all'),backgroundColor:['#c0392b','#2a7a4b',GOLD],borderWidth:2,borderColor:'#faf8f5'}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,cutout:'50%',
+    plugins:{legend:{position:'bottom',labels:{font:{size:10}}},
+      tooltip:{callbacks:{label:ctx=>ctx.label+': '+fmt(ctx.parsed)+' pakkar'}}}
+  }
+});
+
+C.dufShare = new Chart(document.getElementById('chDufShare'),{
+  type:'line',
+  data:{labels:['2023','2024','2025'],
+    datasets:[{label:'Hlutdeild %',
+      data:[(1000/6785430*100),(13420/6403430*100),(14410/6222992*100)],
+      borderColor:GOLD,backgroundColor:GOLD+'20',fill:true,tension:.3,pointRadius:5,borderWidth:2.5,pointBackgroundColor:GOLD}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(3)+'%'}}},
+    scales:{y:{grid:{color:'rgba(0,0,0,.05)'},ticks:{callback:v=>v.toFixed(2)+'%'},beginAtZero:true},x:{grid:{display:false}}}
+  }
+});
+
+/* ══════════════════════════════════════════════
+   GLOBAL YEAR FILTER
+══════════════════════════════════════════════ */
+let activeYear = 'all';
+const YEAR_TO_COL = {'2023':'y23','2024':'y24','2025':'y25','2026':'y26','all':'total'};
+
+function setYear(yr){
+  activeYear = yr;
+  const label = YR_LABELS[yr];
+
+  // ── YoY strip ──
+  renderYoY(yr);
+
+  // Update info text
+  document.getElementById('ybInfo').innerHTML = 'Sýnir: <strong>' + (yr==='all'?'öll ár samanlagt':yr==='2026'?'Q1 2026':yr) + '</strong>';
+
+  // Update section badges
+  ['sh01badge','sh02badge','sh03badge','sh05badge','sh07badge'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=label;
+  });
+  const sb04=document.getElementById('sh04badge');
+  if(sb04) sb04.textContent=yr==='all'?'2025':label;
+
+  // ── Hero ──
+  const heroTexts = {
+    all:{title:'Markaðurinn dróst saman um <em>8,3%</em> á tveimur árum',desc:'Frá 6,79 milljónum pakka árið 2023 niður í 6,22 milljónir árið 2025. Rolf Johansen ræður nærri helmingi markaðarins.'},
+    '2023':{title:'2023 — <em>6,79 milljónir</em> pakka á markaði',desc:'Stærsta árið á tímabilinu. Rolf Johansen með 48,7% hlutdeild. Winston langvinsælasta merki með 37,6% hlutdeild.'},
+    '2024':{title:'2024 — Markaðurinn dróst saman um <em>5,6%</em>',desc:'Lækkun úr 6,79M í 6,40M pakka. Rolf Johansen hélt hlutdeild og Urriðafoss jók sölu um 63%.'},
+    '2025':{title:'2025 — Samdráttur heldur áfram, <em>6,22 milljónir</em> pakka',desc:'Mark 1 er eina stóra merkið í vexti (+37%). Dufland kemst yfir 14.000 pakka. Fitjaborg horfið af markaði.'},
+    '2026':{title:'Q1 2026 — Jákvæð þróun, <em>+4,7%</em> frá Q1 2025',desc:'Fyrstu þrír mánuðir 2026: 1.326.230 pakkar. Mars 2026 er sterkur mánuður með 537.050 pakka.'},
+  };
+  const ht = heroTexts[yr]||heroTexts.all;
+  document.getElementById('heroTitle').innerHTML = ht.title;
+  document.getElementById('heroDesc').textContent = ht.desc;
+
+  // Hero stats
+  const mktTotal = D.yearly[yr];
+  document.getElementById('hs1l').textContent = yr==='all'?'Heildarsala':'Heildarsala '+label;
+  document.getElementById('hs1v').textContent = fmt(mktTotal);
+  const heroNotes = {
+    all:{hs1:'2023–Q1 2026 samtals',hs2:'6 birgjar á tímabilinu',hs3:'17+ vörumerki',hs4:'Rolf 49% · Winston #1'},
+    '2023':{hs1:'Stærsta ár tímabilsins',hs2:'6 birgjar virkir',hs3:'17+ vörumerki',hs4:'Rolf 48,7% · Winston #1'},
+    '2024':{hs1:'▼ 5,6% frá 2023',hs2:'5 birgjar (Fitja minnkar)',hs3:'17+ vörumerki',hs4:'Rolf 48,6% · Winston #1'},
+    '2025':{hs1:'▼ 2,8% frá 2024',hs2:'5 birgjar virkir',hs3:'17+ vörumerki',hs4:'Rolf 49,2% · Winston #1'},
+    '2026':{hs1:'Janúar–Mars 2026',hs2:'5 birgjar',hs3:'17+ vörumerki',hs4:'Rolf 48,8% · Winston #1'},
+  };
+  const hn = heroNotes[yr]||heroNotes.all;
+  document.getElementById('hs1n').textContent = hn.hs1;
+  document.getElementById('hs1n').className = 'hs-note nu';
+  document.getElementById('hs2n').textContent = hn.hs2;
+  document.getElementById('hs3n').textContent = hn.hs3;
+  document.getElementById('hs4n').textContent = hn.hs4;
+
+  // ── KPI row ──
+  document.getElementById('kpi1').textContent = fmt(mktTotal);
+  document.getElementById('kpi1f').textContent = yr==='all'?'pakkar, allt tímabilið':'pakkar í '+label;
+  const supTotals = SUP_NAMES.map(s=>({name:s,v:D.sup[s][yr]||0}));
+  const topSup = supTotals.sort((a,b)=>b.v-a.v)[0];
+  const topSupPct = mktTotal>0?(topSup.v/mktTotal*100).toFixed(1):'0';
+  document.getElementById('kpi2').textContent = topSup.name.split(' ')[0]+' '+topSup.name.split(' ')[1]||topSup.name;
+  document.getElementById('kpi2f').textContent = topSupPct+'% markaðshlutdeild '+label;
+  const brandTotals = BRAND_NAMES.map(b=>({name:b,v:D.brand[b][yr]||0}));
+  const topBrand = brandTotals.sort((a,b)=>b.v-a.v)[0];
+  const topBrandPct = mktTotal>0?(topBrand.v/mktTotal*100).toFixed(1):'0';
+  document.getElementById('kpi3').textContent = topBrand.name;
+  document.getElementById('kpi3f').textContent = topBrandPct+'% markaðshlutdeild '+label;
+  document.getElementById('kpi5').textContent = fmt(D.duf.total[yr]||Object.values(D.duf.total).reduce((a,b)=>a+b,0));
+  document.getElementById('kpi5f').textContent = yr==='all'?'pakkar samtals 2023–2026':'pakkar '+label;
+
+  // ── 01 Yearly bar — highlight selected ──
+  if(yr==='all'){
+    C.yearly.data.datasets[0].backgroundColor = YEARS.map(y=>YR_COLORS[y]);
+  } else {
+    C.yearly.data.datasets[0].backgroundColor = YEARS.map(y=>y===yr?YR_COLORS[yr]:'rgba(10,10,11,.1)');
+  }
+  C.yearly.update('none');
+
+  // ── 01 Monthly chart ──
+  C.monthly.data.datasets = buildMonthlyDatasets(yr);
+  C.monthly.update('none');
+
+  // ── 02 Supplier donut ──
+  C.supPie.data.datasets[0].data = supPieData(yr);
+  C.supPie.update('none');
+  document.getElementById('card02sub').textContent = yr==='all'?'Hlutfallsleg skipting, allt tímabilið':'Hlutfallsleg skipting '+label;
+
+  // ── 02 Supplier stacked — highlight selected year ──
+  if(yr==='all'){
+    C.supStack.data.datasets.forEach((ds,i)=>{ds.backgroundColor=SUP_COLS[SUP_NAMES[i]]});
+  } else {
+    const yIdx = YEARS.indexOf(yr);
+    C.supStack.data.datasets.forEach((ds,i)=>{
+      ds.backgroundColor = YEARS.map((_,j)=>j===yIdx?SUP_COLS[SUP_NAMES[i]]:'rgba(10,10,11,.08)');
+    });
+  }
+  C.supStack.update('none');
+
+  // ── 03 Brand bar ──
+  C.brandBar.data.datasets[0].data = brandBarData(yr);
+  C.brandBar.update('none');
+  document.getElementById('card03sub').textContent = yr==='all'?'Samtals yfir allt tímabilið':'Sala '+label;
+
+  // ── 04 Supplier monthly ──
+  const supYr = yr==='all'?'2025':yr;
+  C.supMonthly.data.datasets = buildSupMonthlyDs(yr);
+  C.supMonthly.update('none');
+  document.getElementById('card04sub').textContent = 'Stacked area chart — magn pakka á mánuði · '+(yr==='all'?'2025':label);
+  const sb04b = document.getElementById('sh04badge');
+  if(sb04b) sb04b.textContent = yr==='all'?'2025':label;
+
+  // ── 05 Table ──
+  const highlightCol = YEAR_TO_COL[yr];
+  if(yr!=='all') tableSortCol=highlightCol;
+  renderTable(tableSortCol, tableSortAsc, highlightCol);
+  // Highlight active year column header
+  ['th23','th24','th25','th26'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.remove('active-col');
+  });
+  if(yr!=='all'){
+    const thMap={'2023':'th23','2024':'th24','2025':'th25','2026':'th26'};
+    if(thMap[yr]) document.getElementById(thMap[yr])?.classList.add('active-col');
+  }
+
+  // ── 06 Dufland pie ──
+  C.dufPie.data.datasets[0].data = dufPieData(yr);
+  C.dufPie.update('none');
+  document.getElementById('dufPieSub').textContent = yr==='all'?'Skipting á milli tegunda (2025)':'Skipting á milli tegunda '+label;
+}
+
+// Initial render
+renderYoY('all');
+
+/* ── Year button clicks ── */
+document.querySelectorAll('.ybtn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.ybtn').forEach(b=>{
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+    setYear(btn.dataset.year);
+  });
+});
+
+/* ══════════════════════════════════════════════
+   SCROLL ANIMATIONS
+══════════════════════════════════════════════ */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.style.animationPlayState='running';obs.unobserve(e.target);}});
+},{threshold:0.08});
+document.querySelectorAll('.ani').forEach(el=>{
+  el.style.animationPlayState='paused';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
